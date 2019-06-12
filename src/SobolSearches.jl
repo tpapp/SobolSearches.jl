@@ -7,12 +7,12 @@ using DocStringExtensions: SIGNATURES
 using Parameters: @unpack
 import Sobol
 
-struct SobolSearch{TV,TF,TS,TM}
+struct SobolSearch{TM,TF,TV,TS} <: AbstractVector{TM}
+    minima::Vector{TM}
+    minimand::TF
     lower_bounds::TV
     upper_bounds::TV
-    minimand::TF
     sobol_seq::TS
-    minima::TM
 end
 
 function _transform_position(lower_bounds, upper_bounds, s)
@@ -34,7 +34,7 @@ function setup_sobol_search(minimand, lower_bounds, upper_bounds, keep;
     minima = [_evaluated_position(minimand, lower_bounds, upper_bounds, Sobol.next!(sobol_seq))
               for _ in 1:keep]
     sort!(minima, by = x -> x.value)
-    SobolSearch(lower_bounds, upper_bounds, minimand, sobol_seq, minima)
+    SobolSearch(minima, minimand, lower_bounds, upper_bounds, sobol_seq)
 end
 
 function sobol_search_next!(search::SobolSearch)
@@ -78,7 +78,7 @@ function sobol_search(minimand, lower_bounds, upper_bounds, keep, steps; skip = 
     sobol_search!(search, steps)
 end
 
-Base.IndexStyle(::Type{<:SobolSearch}) = Base.IndexStyle(search.minima)
+Base.IndexStyle(::Type{<:SobolSearch{TM}}) where {TM} = Base.IndexStyle(Vector{TM})
 
 Base.size(search::SobolSearch) = size(search.minima)
 
