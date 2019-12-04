@@ -11,6 +11,10 @@ Sobol = "ed01d8cd-4d21-5b2a-85b4-cc3bdc58bad4"
 
 [compat]
 julia = "^1"
+ArgCheck = "^1"
+DocStringExtensions = "^0.8"
+Parameters = "^0.12"
+Sobol = "^1"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
